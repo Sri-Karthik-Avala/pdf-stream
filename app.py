@@ -46,7 +46,7 @@ def teacher_dashboard():
     uploaded_file = st.file_uploader("Upload a PDF", type=["pdf"])
     if uploaded_file is not None:
         st.session_state['pdf_file'] = uploaded_file
-        pdf_reader = PyPDF2.PdfFileReader(uploaded_file)
+        pdf_reader = PyPDF2.PdfReader(uploaded_file)
         st.session_state['total_pages'] = pdf_reader.numPages
     
     if st.session_state['pdf_file']:
