@@ -1,5 +1,6 @@
 import streamlit as st
 import PyPDF2
+import base64
 
 # Dummy login details
 users = {
@@ -18,6 +19,15 @@ if 'pdf_file' not in st.session_state:
     st.session_state['pdf_file'] = None
 if 'total_pages' not in st.session_state:
     st.session_state['total_pages'] = 0
+
+# Function to display PDF using iframe
+def display_pdf(pdf_file):
+    # Read the PDF file
+    base64_pdf = base64.b64encode(pdf_file.read()).decode('utf-8')
+
+    # Use an iframe to display the PDF
+    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf"></iframe>'
+    st.markdown(pdf_display, unsafe_allow_html=True)
 
 # Login Function
 def login():
@@ -57,8 +67,7 @@ def teacher_dashboard():
         # Display PDF page
         if st.button("Show Page"):
             st.write(f"Showing Page {current_page + 1}")
-            # Render the current page of the PDF
-            st.pdf_display(st.session_state['pdf_file'].read(), page=current_page)
+            display_pdf(st.session_state['pdf_file'])
 
     # Display connected students
     st.write("Connected Students:")
@@ -71,7 +80,7 @@ def student_dashboard():
     
     if st.session_state['pdf_file']:
         st.write(f"Viewing page {st.session_state['current_page'] + 1}")
-        st.pdf_display(st.session_state['pdf_file'].read(), page=st.session_state['current_page'])
+        display_pdf(st.session_state['pdf_file'])
     else:
         st.warning("Waiting for the teacher to upload a PDF.")
 
